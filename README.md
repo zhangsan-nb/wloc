@@ -17,8 +17,11 @@
 - 选点页面：`https://wloc-zhangsan-nb.pages.dev/`
 - Pages 项目名：`wloc-zhangsan-nb`（已部署）
 - 独立 Worker：`https://wloc-spoofer-zhangsan-nb.wuyanzu6869.workers.dev/`（项目名 `wloc-spoofer-zhangsan-nb`，已部署）
+- Release 归档：`https://github.com/zhangsan-nb/wloc/releases/tag/v1.0.0`（发布说明和 4 个原始附件已镜像并校验 SHA-256）
 
 Pages 和独立 Worker 均已实际验证：首页、`/health` 和 `/api/parse` 均返回 HTTP 200。模块与快捷指令默认使用 Pages 稳定生产域名；Worker 是独立备用入口。不要使用单次部署生成的预览子域名。
+
+`v1.0.0` Release 的附件是上游发布物的逐字节历史归档，内部仍保留发布当时的上游 Raw、Pages 和 iCloud 链接，不作为当前安装入口。长期使用请采用下方订阅地址。
 
 ## 订阅地址
 

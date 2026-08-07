@@ -56,3 +56,5 @@ Pages Functions 与独立 Worker 均已部署并验证：首页、`/health` 和 
 ## 非运行时来源引用
 
 README 保留上游仓库链接用于署名和来源说明。此链接由 `scripts/check-self-hosted.mjs` 的窄范围白名单允许；任何其他文件中的上游仓库 URL 仍会使检查失败。
+
+GitHub `v1.0.0` Release 另行保存了上游发布说明和 4 个原始附件，附件名称、大小和 SHA-256 均已核对一致。它们是逐字节历史归档，因而有意保留发布当时的上游 Raw、Pages 和 iCloud 链接；当前安装与运行不引用这些 Release 附件，应使用 README 中指向本仓库 `main` 分支的订阅地址。
