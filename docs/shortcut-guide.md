@@ -32,6 +32,12 @@ https://wloc-zhangsan-nb.pages.dev
 
 该 Pages 地址已部署并验证：首页、`/health` 和 `/api/parse` 均正常。Wrangler 每次部署还会返回一个带随机前缀的预览地址，快捷指令应继续使用上面的稳定生产域名。
 
+已部署并完成同样验证的独立 Worker 备用地址是：
+
+```text
+https://wloc-spoofer-zhangsan-nb.wuyanzu6869.workers.dev
+```
+
 ## 重建“设置地理位置”
 
 在快捷指令 App 新建快捷指令，并按顺序添加：
@@ -74,6 +80,8 @@ https://wloc-zhangsan-nb.pages.dev
 这个快捷指令不调用 Worker/Pages。其请求会被已安装模块中的 `dist/wloc-settings.js` 拦截，并清除设备本地 `wloc_settings`。
 
 ## 发布自己的分享链接
+
+这一步必须在登录本人 Apple ID 的 iPhone、iPad 或 Mac 快捷指令 App 中完成。GitHub、Cloudflare 和 Windows 端不能签发属于该 Apple ID 的 iCloud 快捷指令分享链接。
 
 1. 在快捷指令 App 中逐个运行并验证。
 2. 打开快捷指令详情，选择“共享” -> “复制 iCloud 链接”。

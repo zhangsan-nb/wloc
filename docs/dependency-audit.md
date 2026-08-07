@@ -20,9 +20,9 @@
 | GitHub 仓库 | `https://github.com/zhangsan-nb/wloc` | README、模块 homepage、clone、Cloudflare deploy |
 | GitHub Raw | `https://raw.githubusercontent.com/zhangsan-nb/wloc/refs/heads/main/` | 模块脚本、图标和订阅 |
 | Pages Functions | 项目 `wloc-zhangsan-nb`，生产地址 `https://wloc-zhangsan-nb.pages.dev/` | 模块选点页面、快捷指令 `/api/parse` |
-| Cloudflare Worker | 配置名 `wloc-spoofer-zhangsan-nb`，未单独部署 | 可替代 Pages Functions 提供相同页面和 API |
+| Cloudflare Worker | 项目 `wloc-spoofer-zhangsan-nb`，生产地址 `https://wloc-spoofer-zhangsan-nb.wuyanzu6869.workers.dev/` | Pages Functions 的独立备用入口，提供相同页面和 API |
 
-Pages Functions 已部署并验证：首页、`/health` 和 `/api/parse` 均返回 HTTP 200。由于 Pages 已覆盖完整页面和 API，本次没有重复部署独立 Worker。
+Pages Functions 与独立 Worker 均已部署并验证：首页、`/health` 和 `/api/parse` 均返回 HTTP 200。模块默认使用 Pages 稳定域名，Worker 保留为同账号下的独立备用入口。
 
 ## 仍保留的第三方运行时依赖
 

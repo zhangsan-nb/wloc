@@ -16,9 +16,9 @@
 - Raw 脚本：全部来自 `zhangsan-nb/wloc` 的 `main` 分支
 - 选点页面：`https://wloc-zhangsan-nb.pages.dev/`
 - Pages 项目名：`wloc-zhangsan-nb`（已部署）
-- Worker 项目名：`wloc-spoofer-zhangsan-nb`（未单独部署，Pages 已提供相同页面和 API）
+- 独立 Worker：`https://wloc-spoofer-zhangsan-nb.wuyanzu6869.workers.dev/`（项目名 `wloc-spoofer-zhangsan-nb`，已部署）
 
-Pages 生产地址已经实际验证：首页、`/health` 和 `/api/parse` 均返回 HTTP 200。模块与快捷指令应使用上面的稳定生产域名，不要使用单次部署生成的预览子域名。
+Pages 和独立 Worker 均已实际验证：首页、`/health` 和 `/api/parse` 均返回 HTTP 200。模块与快捷指令默认使用 Pages 稳定生产域名；Worker 是独立备用入口。不要使用单次部署生成的预览子域名。
 
 ## 订阅地址
 
@@ -48,7 +48,7 @@ Stash 请直接订阅 `.stoverride`，无需通过 Script Hub 转换。
 
 ### 自建版本（长期使用）
 
-自己的快捷指令分享地址尚未创建。创建后只需把下面两项替换为新的 iCloud 分享链接：
+自己的快捷指令分享地址尚未发布。iCloud 分享链接只能由登录本人 Apple ID 的 iPhone、iPad 或 Mac 快捷指令 App 生成，GitHub、Cloudflare 和当前 Windows 环境不能代替账号发布。发布后只需把下面两项替换为新的 iCloud 分享链接：
 
 - wloc 设置地理位置：`待创建`
 - wloc 清理恢复位置：`待创建`
@@ -67,7 +67,7 @@ Stash 请直接订阅 `.stoverride`，无需通过 Script Hub 转换。
 https://gs-loc.apple.com/wloc-settings/save?action=clear
 ```
 
-如果改用直接部署的 Worker，请把第 2 步的域名替换为 Wrangler 实际返回的 Worker 地址。快捷指令中若有上游仓库模块链接或作者社群链接，也应删除或替换为本仓库地址。逐步重建说明见 [`docs/shortcut-guide.md`](docs/shortcut-guide.md)。
+如果改用独立 Worker，请把第 2 步的域名替换为 `https://wloc-spoofer-zhangsan-nb.wuyanzu6869.workers.dev`。快捷指令中若有上游仓库模块链接或作者社群链接，也应删除或替换为本仓库地址。逐步重建说明见 [`docs/shortcut-guide.md`](docs/shortcut-guide.md)。
 
 ### 上游快捷指令（仅作来源参考）
 
@@ -144,7 +144,7 @@ npx wrangler login
 npm run deploy
 ```
 
-部署项目名为 `wloc-spoofer-zhangsan-nb`。部署成功后，把实际 Worker 地址写入快捷指令；若希望模块打开 Worker 页面，也把五个模块中的 `https://wloc-zhangsan-nb.pages.dev/` 换成该地址。
+部署项目名为 `wloc-spoofer-zhangsan-nb`，当前稳定地址为 `https://wloc-spoofer-zhangsan-nb.wuyanzu6869.workers.dev/`。该地址已作为 Pages 的独立备用入口部署；若希望模块默认打开 Worker 页面，可把五个模块中的 `https://wloc-zhangsan-nb.pages.dev/` 换成该地址。
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zhangsan-nb/wloc/tree/main/worker)
 
