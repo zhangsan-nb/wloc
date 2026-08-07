@@ -183,14 +183,13 @@ npm run build
 
 ## Git 历史备份
 
-当前 `main` 保留了 Fork 的完整提交历史；审计时另外从上游抓取了 `geo` 分支和 `v1.0.0` 标签。GitHub 没有受支持的公开 API 可以把 Fork 安全地脱离 fork network，不能通过删库重建冒险处理。需要独立仓库时，应向 GitHub Support 请求 detach。
+当前 `main` 保留了 Fork 的完整提交历史；审计时另外从上游抓取了 `geo` 分支和 `v1.0.0` 标签。截至 2026-08-08，GitHub API 仍将本仓库标记为 `Yu9191/wloc` 的 Fork。GitHub 已提供官方自助脱离入口：`Settings -> General -> Danger Zone -> Leave fork network`；本仓库是公开仓库、小于 1 GB 且没有子 Fork，满足脱离条件。该操作永久且不能重新加入原 Fork 网络，不能通过删库重建替代；若官方入口失败，再使用 GitHub Fork Support。
 
-恢复 GitHub 写权限后，可把归档引用推送到自己的 Fork：
+远端仓库已经保存归档引用，可用以下命令核对：
 
 ```bash
-git fetch upstream --tags
-git push origin refs/heads/geo
-git push origin refs/tags/v1.0.0
+git ls-remote origin refs/heads/geo
+git ls-remote origin refs/tags/v1.0.0
 ```
 
 这些引用是上游历史快照，不是当前自托管 `main` 的运行入口。
