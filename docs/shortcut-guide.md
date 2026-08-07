@@ -30,7 +30,7 @@ https://gs-loc.apple.com/wloc-settings/save?action=clear
 https://wloc-zhangsan-nb.pages.dev
 ```
 
-本次处理环境没有 Cloudflare 登录权限，所以上述地址必须在部署后实际访问验证。如果 Wrangler 返回了不同地址，以下所有步骤都使用实际地址。
+该 Pages 地址已部署并验证：首页、`/health` 和 `/api/parse` 均正常。Wrangler 每次部署还会返回一个带随机前缀的预览地址，快捷指令应继续使用上面的稳定生产域名。
 
 ## 重建“设置地理位置”
 

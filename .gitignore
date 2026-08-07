@@ -1,4 +1,5 @@
 node_modules/
+.wrangler/
 src/
 package.json
 package-lock.json

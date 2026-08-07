@@ -9,7 +9,7 @@
 | 上游 GitHub Raw 脚本与图标 | `README.md`、五个 `modules/*` | 全部改为 `raw.githubusercontent.com/zhangsan-nb/wloc` |
 | 上游仓库主页与 clone/deploy 链接 | `README.md`、五个 `modules/*` | 运行/安装链接全部改为 `zhangsan-nb/wloc`；README 仅保留上游来源署名 |
 | 上游 Worker `/api/parse` | README 与上游“设置位置”快捷指令 | 仓库文档、页面和模块不再调用；自建快捷指令改为自己的 `SELF_HOST_URL` |
-| 上游 Pages 选点页面 | README 与模块元数据 | 改为预设自有项目 `https://wloc-zhangsan-nb.pages.dev/` |
+| 上游 Pages 选点页面 | README 与模块元数据 | 改为已部署的自有项目 `https://wloc-zhangsan-nb.pages.dev/` |
 | 上游 iCloud 快捷指令 | README 与模块描述 | 从模块运行说明中移除；README 只保留为来源参考，并提供可独立重建步骤 |
 | 上游社群链接 | 上游“设置位置”快捷指令内部 | 自建快捷指令要求删除或替换，不作为功能依赖 |
 
@@ -19,10 +19,10 @@
 | --- | --- | --- |
 | GitHub 仓库 | `https://github.com/zhangsan-nb/wloc` | README、模块 homepage、clone、Cloudflare deploy |
 | GitHub Raw | `https://raw.githubusercontent.com/zhangsan-nb/wloc/refs/heads/main/` | 模块脚本、图标和订阅 |
-| Pages Functions | 项目 `wloc-zhangsan-nb`，预设 `https://wloc-zhangsan-nb.pages.dev/` | 模块选点页面、快捷指令 `/api/parse` |
-| Cloudflare Worker | 项目 `wloc-spoofer-zhangsan-nb`，部署后地址以 Wrangler 为准 | 可替代 Pages Functions 提供相同页面和 API |
+| Pages Functions | 项目 `wloc-zhangsan-nb`，生产地址 `https://wloc-zhangsan-nb.pages.dev/` | 模块选点页面、快捷指令 `/api/parse` |
+| Cloudflare Worker | 配置名 `wloc-spoofer-zhangsan-nb`，未单独部署 | 可替代 Pages Functions 提供相同页面和 API |
 
-Cloudflare 资源尚未在本次环境中部署或验证，因为 Wrangler 未登录。预设 Pages 地址不是“已上线”声明。
+Pages Functions 已部署并验证：首页、`/health` 和 `/api/parse` 均返回 HTTP 200。由于 Pages 已覆盖完整页面和 API，本次没有重复部署独立 Worker。
 
 ## 仍保留的第三方运行时依赖
 

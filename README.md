@@ -14,12 +14,11 @@
 
 - 仓库：`https://github.com/zhangsan-nb/wloc`
 - Raw 脚本：全部来自 `zhangsan-nb/wloc` 的 `main` 分支
-- 默认选点页面：`https://wloc-zhangsan-nb.pages.dev/`
-- Pages 项目名：`wloc-zhangsan-nb`
-- Worker 项目名：`wloc-spoofer-zhangsan-nb`
-- Worker 地址：部署后以 Wrangler 输出为准
+- 选点页面：`https://wloc-zhangsan-nb.pages.dev/`
+- Pages 项目名：`wloc-zhangsan-nb`（已部署）
+- Worker 项目名：`wloc-spoofer-zhangsan-nb`（未单独部署，Pages 已提供相同页面和 API）
 
-当前处理环境没有 Cloudflare 登录权限，因此 `https://wloc-zhangsan-nb.pages.dev/` 是仓库中预设的自托管项目地址，尚不能在这里声明已上线。完成下面的 Pages 部署后再使用；若项目名已被占用，应把五个模块和本 README 中的地址统一改为实际地址。
+Pages 生产地址已经实际验证：首页、`/health` 和 `/api/parse` 均返回 HTTP 200。模块与快捷指令应使用上面的稳定生产域名，不要使用单次部署生成的预览子域名。
 
 ## 订阅地址
 
@@ -159,7 +158,7 @@ npx wrangler login
 npm run pages:deploy
 ```
 
-默认项目名为 `wloc-zhangsan-nb`，预期地址为 `https://wloc-zhangsan-nb.pages.dev/`。脚本直接传入 `dist` 和项目名，是为了兼容当前 Wrangler Pages 不接受自定义配置文件路径的行为；`worker/wrangler.pages.jsonc` 仍作为配置参考保留。实际结果必须以 Wrangler 输出和访问验证为准。
+默认项目名为 `wloc-zhangsan-nb`，当前生产地址为 `https://wloc-zhangsan-nb.pages.dev/`。脚本直接传入 `dist` 和项目名，是为了兼容当前 Wrangler Pages 不接受自定义配置文件路径的行为；`worker/wrangler.pages.jsonc` 仍作为配置参考保留。后续重新部署仍应按下一节验证稳定生产域名。
 
 ### 部署后验证
 
