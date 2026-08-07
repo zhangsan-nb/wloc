@@ -1,3 +1,7 @@
 .wrangler
+.npm-cache
 node_modules
 bun.lock
+.dev.vars
+.env
+.env.*

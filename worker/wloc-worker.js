@@ -1,5 +1,8 @@
 /**
  * WLOC 虚拟定位 Cloudflare Worker
+ *
+ * Legacy 单文件页面，仅保留上游实现，不包含 /api/parse。
+ * 自托管部署请使用 wrangler.jsonc 指向的 src/index.js。
  * 
  * 纯静态页面，无需 KV 或任何存储绑定
  * 坐标通过代理模块写入设备本地 $persistentStore

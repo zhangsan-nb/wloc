@@ -1,244 +1,211 @@
 <p align="center">
-  <img src="wloc.jpg" width="144" />
+  <img src="wloc.jpg" width="144" alt="WLOC" />
 </p>
 
-# Apple WLOC 定位修改
+# Apple WLOC 定位修改（自托管备份版）
 
-修改 Apple 网络定位服务 (WiFi/基站) 返回的坐标，实现 iOS 网络定位虚拟定位。打开在线选点页面选位置即可生效，无需手动填经纬度。
+> 本仓库为 [Yu9191/wloc](https://github.com/Yu9191/wloc) 的自托管备份版本，主要用于避免上游仓库或公共服务失效。原始项目、主要代码和署名归原作者所有，本仓库不主张原创。
 
----
+> 上游仓库目前未发现明确 LICENSE；使用、修改和再分发权限请以原作者授权为准。本仓库不会擅自补加 MIT、GPL、Apache 等许可证。
+
+修改 Apple 网络定位服务（WiFi/基站）返回的坐标，实现 iOS 网络定位修改。安装对应代理工具模块后，可通过自托管选点页面或自建快捷指令写入坐标。
+
+## 当前自托管状态
+
+- 仓库：`https://github.com/zhangsan-nb/wloc`
+- Raw 脚本：全部来自 `zhangsan-nb/wloc` 的 `main` 分支
+- 默认选点页面：`https://wloc-zhangsan-nb.pages.dev/`
+- Pages 项目名：`wloc-zhangsan-nb`
+- Worker 项目名：`wloc-spoofer-zhangsan-nb`
+- Worker 地址：部署后以 Wrangler 输出为准
+
+当前处理环境没有 Cloudflare 登录权限，因此 `https://wloc-zhangsan-nb.pages.dev/` 是仓库中预设的自托管项目地址，尚不能在这里声明已上线。完成下面的 Pages 部署后再使用；若项目名已被占用，应把五个模块和本 README 中的地址统一改为实际地址。
 
 ## 订阅地址
 
-**Surge:**
-https://raw.githubusercontent.com/Yu9191/wloc/refs/heads/main/modules/wloc.sgmodule
+| 客户端 | 订阅地址 |
+| --- | --- |
+| Surge / Egern | https://raw.githubusercontent.com/zhangsan-nb/wloc/refs/heads/main/modules/wloc.sgmodule |
+| Quantumult X | https://raw.githubusercontent.com/zhangsan-nb/wloc/refs/heads/main/modules/wloc.conf |
+| Loon | https://raw.githubusercontent.com/zhangsan-nb/wloc/refs/heads/main/modules/wloc.lpx |
+| Stash | https://raw.githubusercontent.com/zhangsan-nb/wloc/refs/heads/main/modules/wloc.stoverride |
+| Shadowrocket（小火箭） | https://raw.githubusercontent.com/zhangsan-nb/wloc/refs/heads/main/modules/wloc.module |
 
-**Quantumult X:**
-https://raw.githubusercontent.com/Yu9191/wloc/refs/heads/main/modules/wloc.conf
+Stash 请直接订阅 `.stoverride`，无需通过 Script Hub 转换。
 
-**Loon:**
-https://raw.githubusercontent.com/Yu9191/wloc/refs/heads/main/modules/wloc.lpx
+## 自托管说明
 
-**Stash:**
-https://raw.githubusercontent.com/Yu9191/wloc/refs/heads/main/modules/wloc.stoverride
+本版本运行时使用以下资源：
 
-**Shadowrocket(小火箭):**
-https://raw.githubusercontent.com/Yu9191/wloc/refs/heads/main/modules/wloc.module
+- GitHub 脚本、图标、模块和仓库主页：来自 `zhangsan-nb/wloc`。
+- 选点页面与 `/api/parse`：应来自本账号部署的 Cloudflare Worker 或 Pages Functions。
+- 快捷指令：设置位置版本必须调用自己的 `/api/parse`；清理版本只调用被代理模块拦截的 Apple 设置接口。
+- 地图和搜索：仍使用 Leaflet CDN、ArcGIS、OpenStreetMap、Carto、高德地图瓦片和 Nominatim。这些是第三方公共服务，但不属于上游作者账号。
+- Apple 接口：`gs-loc.apple.com` 与 `gs-loc-cn.apple.com` 是项目业务所需目标，不是上游作者服务。
 
-> Egern 可直接使用 Surge 模块
-> Stash 请直接订阅上面的 `.stoverride`，无需用 Script Hub 转换
+仓库内运行时代码、模块和部署配置不再依赖上游作者的 GitHub Raw、Worker 或 Pages。完整外部依赖清单见 [`docs/dependency-audit.md`](docs/dependency-audit.md)。
 
----
+## 快捷指令
 
-## 快捷指令（推荐，最方便）
+### 自建版本（长期使用）
 
-直接用快捷指令切换 / 清除定位，无需打开选点页面：
+自己的快捷指令分享地址尚未创建。创建后只需把下面两项替换为新的 iCloud 分享链接：
 
-- **wloc 设置地理位置**：https://www.icloud.com/shortcuts/a82717d8fdad4e6280866fcf911173f7
-- **wloc 清理恢复位置**：https://www.icloud.com/shortcuts/f42632d406504f24a2cd163af4fe012f
+- wloc 设置地理位置：`待创建`
+- wloc 清理恢复位置：`待创建`
 
-**用法**
+设置位置快捷指令的关键流程：
 
-- **设置位置：** 在地图 App 里选好位置（长按地图选点）→ 共享 → 选「wloc 设置地理位置」即可切换。
-  - 苹果地图：选点 → 共享 → 「wloc 设置地理位置」
-  - 高德地图：选点 → 分享 → **更多** → 「wloc 设置地理位置」
-- **清理位置：** 点「wloc 清理恢复位置」即可恢复真实定位。
+1. 接收地图 App 分享的 URL 或文本并进行 URL 编码。
+2. 请求 `https://wloc-zhangsan-nb.pages.dev/api/parse?format=json&u=<编码后的地图链接>`。
+3. 从 JSON 中读取 `lat`、`lon` 和可选的 `name`。
+4. 请求 `https://gs-loc.apple.com/wloc-settings/save?lat=<lat>&lon=<lon>&acc=25`。
+5. 代理模块拦截第 4 步，由 `dist/wloc-settings.js` 把坐标写入设备持久化存储。
 
-支持苹果地图、高德（含短链，自动跟跳转 + GCJ-02→WGS84 坐标换算）。
+清理快捷指令只需请求：
 
-> 前提：代理已开 + 模块已启用 + 信任 `gs-loc.apple.com`。选点页面（Worker / Pages）方案仍保留，见下方。
-
----
-
-### 关于地图链接解析（worker）
-
-为了让苹果地图和高德走同一条流程，链接统一发给 `wloc-spoofer.wloc.workers.dev/api/parse` 解析：
-
-- **高德**：分享出来是短链，真实坐标只藏在 302 跳转的 `Location` 头里，且是 GCJ-02 偏移坐标。快捷指令既读不到跳转头、也难做坐标换算，所以由 worker 跟跳转 → 抠坐标 → GCJ-02→WGS84 → 返回经纬度。
-- **苹果地图**：链接里直接带 `coordinate=纬度,经度`，但在**中国大陆同样是 GCJ-02 偏移坐标**，所以和高德一样由 worker 做 GCJ-02→WGS84 换算后返回；境外坐标会自动跳过换算（`out_of_china` 判断）原样返回。除了统一坐标系，走同一接口也方便统一处理短链、文本夹链接、名称解码等。
-
-**隐私：** `/api/parse` 是纯转发解析——收到链接 → 跟跳转 → 解析坐标 → 返回 JSON，全程不写任何存储、不记日志、不缓存，处理完即丢。
-
-**不放心可自行部署：** worker 源码完全开源，可自己部署一份替换上面的地址：
-
-- 解析逻辑：[`worker/src/parse.js`](worker/src/parse.js)，路由：[`worker/src/index.js`](worker/src/index.js)
-- 部署后把快捷指令里的 `wloc-spoofer.wloc.workers.dev` 换成你自己的 worker 域名即可。
-
----
-
-<details>
-<summary><b>使用方法</b></summary>
-
-1. 订阅模块并启用 MITM
-2. 打开在线选点页面（公共 Worker，建议添加到主屏幕）
-3. 地图选位置 / 搜索地名 / 粘贴地图链接
-4. 点击「储存到设备」
-5. 下次 Apple 定位触发时自动生效
-
-支持 Apple Maps / Google Maps / 高德 / 百度 / 坐标文本 链接解析。
-
-> **iOS 26/27 及更高版本注意：** Apple 从 iOS 26 开始大幅强化了 `locationd` 的定位缓存机制，系统会将之前获取的真实定位结果缓存在内存中并长时间复用。这意味着安装模块或切换目标坐标后，即使脚本已成功修改了 WLOC 响应（日志显示"已修改"），系统仍可能继续使用缓存中的旧坐标，导致定位看起来没有变化。
->
-> **解决方法：重启设备。** 重启会清空 `locationd` 的内存缓存，系统重新发起 WLOC 请求时会拿到修改后的坐标。飞行模式开关、关闭定位服务等方式在 iOS 26+ 上**无法**清除此缓存，必须重启。iOS 15~18 通常不需要重启即可生效。
-
-**高版本系统推荐操作流程（成功率最高）：**
-
-方法一：
-1. 先在选点页面选好需要修改的定位并储存到设备
-2. 开飞行模式 → 关闭定位服务 → 重启设备
-3. 关闭飞行模式（WiFi 也要关）→ 连接代理工具（确认 VPN 图标出现）→ 打开定位服务
-4. 打开地图验证
-
-方法二：
-1. 关闭定位服务
-2. 在选点页面选好位置并储存到设备
-3. 打开定位服务 → 弹出「允许访问位置信息」时选择**「下次询问或在我共享时」**
-4. 打开地图验证
-
-</details>
-
-<details>
-<summary><b>工作原理</b></summary>
-
-```
-选点页面 → fetch gs-loc.apple.com/wloc-settings/save?lon=x&lat=y
-         → 代理模块拦截 → wloc-settings.js 写入 $persistentStore
-         → 下次 WLOC 触发 → wloc.js 读取坐标 → patch protobuf 响应
+```text
+https://gs-loc.apple.com/wloc-settings/save?action=clear
 ```
 
-模块包含两条规则：
-- `wloc.js` — 拦截 `/clls/wloc` 响应，解析 protobuf 并替换坐标
-- `wloc-settings.js` — 拦截 `/wloc-settings/save` 请求，写入持久化存储
+如果改用直接部署的 Worker，请把第 2 步的域名替换为 Wrangler 实际返回的 Worker 地址。快捷指令中若有上游仓库模块链接或作者社群链接，也应删除或替换为本仓库地址。逐步重建说明见 [`docs/shortcut-guide.md`](docs/shortcut-guide.md)。
 
-</details>
+### 上游快捷指令（仅作来源参考）
 
-<details>
-<summary><b>参数配置</b></summary>
+- 设置地理位置：https://www.icloud.com/shortcuts/a82717d8fdad4e6280866fcf911173f7
+- 清理恢复位置：https://www.icloud.com/shortcuts/f42632d406504f24a2cd163af4fe012f
+
+这两个链接不是本仓库的长期自托管资产。已核查到上游“设置位置”快捷指令会调用上游公共解析服务，并包含上游模块/社群链接；即使当前仍能安装，也必须复制后按上一节替换，不能直接作为自托管完成状态。
+
+## 使用方法
+
+1. 订阅对应客户端模块并启用 MITM。
+2. 确认 MITM 主机名包含 `gs-loc.apple.com` 和 `gs-loc-cn.apple.com`。
+3. 部署自己的 Worker 或 Pages Functions。
+4. 打开自己的选点页面，选择位置并点击“储存到设备”；也可以使用自建快捷指令。
+5. 下次 Apple 网络定位触发时，`dist/wloc.js` 会读取已保存坐标并修改 protobuf 响应。
+
+工作流程：
+
+```text
+选点页面 / 快捷指令
+  -> 请求 gs-loc.apple.com/wloc-settings/save?lon=x&lat=y
+  -> 代理模块拦截
+  -> wloc-settings.js 写入 $persistentStore
+  -> Apple WLOC 请求触发
+  -> wloc.js 读取坐标并修改响应
+```
+
+模块参数优先级：已保存坐标 > 模块参数 > 默认值。默认精度为 25 米，默认日志级别为 `info`。
+
+支持 Apple Maps、Google Maps、高德、百度分享链接和坐标文本。Apple/高德链接由 Worker 的 `parse.js` 处理短链和中国大陆 GCJ-02 -> WGS84 转换；境外坐标会跳过转换。
+
+### 参数配置
 
 | 参数 | 说明 | 默认值 |
-|------|------|--------|
-| longitude | 目标经度(在线选点优先) | null (透传) |
-| latitude | 目标纬度(在线选点优先) | null (透传) |
-| accuracy | 精度(米) | 25 |
-| logLevel | 日志级别 | info |
+| --- | --- | --- |
+| `longitude` | 目标经度（在线选点优先） | `113.94114` |
+| `latitude` | 目标纬度（在线选点优先） | `22.544577` |
+| `accuracy` | 精度（米） | `25` |
+| `logLevel` | 日志级别 | `info` |
 
-优先级: 在线选点储存 > 模块参数 > 默认值
+不使用选点页面时，也可以在代理工具的 BoxJS/持久化存储界面编辑：
 
-</details>
+```json
+{"longitude":121.4737,"latitude":31.2304,"accuracy":25}
+```
 
-<details>
-<summary><b>取消虚拟定位 / 恢复真实定位</b></summary>
+### 收藏位置
 
-**方法一：关闭或删除模块**（推荐）
+选点页面可以把多个坐标保存到浏览器 `localStorage`，点击收藏项即可快速切换；当前生效坐标仍以代理工具的 `wloc_settings` 为准。清除浏览器缓存只会清空收藏列表，不会清除设备上的生效坐标。
 
-关闭模块后脚本不再拦截 WLOC 请求，系统自动恢复真实定位。iOS 26+ 需要重启设备清除定位缓存。
+### iOS 高版本缓存
 
-**方法二：清除持久化数据（透传模式）**
+iOS 26/27 及更高版本可能长时间复用 `locationd` 缓存。安装模块或切换坐标后若脚本日志显示成功但地图没有变化，需要重启设备清除内存缓存；飞行模式或仅关闭定位服务可能不足以清除。
 
-清除已保存的坐标后，脚本进入**透传模式**——不修改 WLOC 响应，直接放行原始数据，系统自动恢复真实 GPS 定位。
+高版本系统建议：先在选点页面保存坐标，关闭定位服务并重启；重启后关闭飞行模式、连接代理并重新打开定位服务，再在地图中验证。较低版本通常无需重启。
 
-**透传模式触发条件：** 持久化数据为空（null）且模块参数为默认值（113.94114, 22.544577）时，脚本判定用户未自定义坐标，自动跳过修改。模块默认参数无需更改，仅清除持久化数据即可触发透传。
+### 恢复真实定位
 
-在代理工具中删除持久化数据，字段名为 `wloc_settings`：
+- 最直接的方法是关闭或删除模块。
+- 也可以调用 `wloc-settings/save?action=clear` 清除 `wloc_settings`。保持模块默认坐标不变时，脚本会进入透传模式。
+- 若模块参数曾手动改成非默认坐标，清除持久化数据后仍会继续使用模块参数，需要同时恢复默认参数或关闭模块。
 
-- **Surge** — 脚本编辑器运行: `$persistentStore.write(null, "wloc_settings")`
-- **Quantumult X** — 运行: `$prefs.removeValueForKey("wloc_settings")`
-- **Loon** — 运行: `$persistentStore.write(null, "wloc_settings")`
+## Cloudflare 部署
 
-清除后重启设备即可恢复真实定位。无需关闭模块，脚本会自动检测到无自定义坐标并跳过修改。
+Worker 入口 `worker/src/index.js` 同时提供选点页面、`/health` 和 `/api/parse`，不需要 KV、D1、R2 或环境变量。Pages Functions 通过 `worker/functions/[[route]].js` 复用同一个 Hono 应用。
 
-> **注意：** 如果用户在模块参数中手动修改了经纬度（非默认 113.94114, 22.544577），即使清除持久化数据，脚本仍会使用模块参数中的坐标进行修改。只有保持默认参数不变时，清除持久化数据才会进入透传模式。
-
-</details>
-
-<details>
-<summary><b>收藏位置功能</b></summary>
-
-在线选点页面支持收藏多个位置，方便来回切换：
-
-- **添加收藏**：选好位置后点击「收藏位置」→ 输入备注名称（支持中文/英文/数字，最多 30 字）→ 保存
-- **快速切换**：点击收藏列表中的位置 → 地图自动跳转 → 点「储存到设备」即可切换
-- **当前生效标记**：与设备已保存坐标一致的收藏会显示「✓ 当前生效」
-- **删除管理**：单个删除（×按钮）或清空全部
-- **当前生效坐标**：页面显示设备端持久化数据（wloc_settings），支持刷新查询和清除
-
-**数据存储说明：**
-- **收藏列表** → 保存在浏览器 `localStorage`（仅用于选点页面的 UI 便捷操作）
-- **生效坐标** → 保存在代理工具持久化存储 `$persistentStore`（脚本运行时实际读取的数据）
-
-两者独立存储。收藏列表是浏览器端的辅助数据，清除浏览器缓存或换浏览器后需重新收藏，但不影响已储存到设备的生效坐标。
-
-</details>
-
-<details>
-<summary><b>自部署 Worker（推荐）</b></summary>
-
-公共选点页面有请求上限，建议部署自己的实例：
-
-- **Workers**: `https://wloc-spoofer.wloc.workers.dev/`
-- **Pages**: `https://wloc-pages.pages.dev/`
-
-**一键部署（Workers）：**
-
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Yu9191/wloc/tree/main/worker)
-
-> 一键部署仅支持 Workers 模式，点击按钮后按提示授权即可完成部署。
-
-**手动部署（Workers）：**
+### 直接部署 Worker
 
 ```bash
-# 1. 克隆仓库
-git clone https://github.com/Yu9191/wloc.git
+git clone https://github.com/zhangsan-nb/wloc.git
 cd wloc/worker
-
-# 2. 安装依赖
-npm install
-
-# 3. 登录 Cloudflare（首次需要）
+npm ci
 npx wrangler login
-
-# 4. 部署
 npm run deploy
 ```
 
-部署成功后会得到你自己的 Worker 地址（如 `https://wloc-spoofer.<你的子域名>.workers.dev`），用这个地址选点即可。
+部署项目名为 `wloc-spoofer-zhangsan-nb`。部署成功后，把实际 Worker 地址写入快捷指令；若希望模块打开 Worker 页面，也把五个模块中的 `https://wloc-zhangsan-nb.pages.dev/` 换成该地址。
 
-> 免费账户每天 10 万次请求，个人使用完全够用。
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zhangsan-nb/wloc/tree/main/worker)
 
-<details>
-<summary>高级：Pages 部署</summary>
-
-Pages 部署不支持一键按钮，需要手动执行：
+### 部署 Pages Functions（模块当前默认）
 
 ```bash
-git clone https://github.com/Yu9191/wloc.git
+git clone https://github.com/zhangsan-nb/wloc.git
 cd wloc/worker
-npm install
-npx wrangler pages deploy dist --project-name <自定义项目名>
+npm ci
+npx wrangler login
+npm run pages:deploy
 ```
 
-部署时会提示设置 production branch，输入 `main` 即可。部署成功后得到 `https://<项目名>.pages.dev` 地址。
+默认项目名为 `wloc-zhangsan-nb`，预期地址为 `https://wloc-zhangsan-nb.pages.dev/`。脚本直接传入 `dist` 和项目名，是为了兼容当前 Wrangler Pages 不接受自定义配置文件路径的行为；`worker/wrangler.pages.jsonc` 仍作为配置参考保留。实际结果必须以 Wrangler 输出和访问验证为准。
 
-Pages 和 Workers 功能完全一致，按需选择即可。
+### 部署后验证
 
-</details>
+```bash
+curl -fsS https://<实际域名>/health
+curl -fsS "https://<实际域名>/api/parse?format=json&cs=none&u=31.2304%2C121.4737"
+```
 
-</details>
+预期分别返回 `{"ok":true,"service":"wloc"}` 和包含 `lat`、`lon` 的 JSON。
 
-<details>
-<summary><b>注意事项</b></summary>
+## 本地检查
 
-- 需要 MITM 证书信任 `gs-loc.apple.com` 和 `gs-loc-cn.apple.com`
-- 仅修改网络定位(WiFi/基站)，不影响 GPS 硬件定位
-- iOS 在 GPS 信号强时可能忽略网络定位结果
-- 适用于 WiFi 定位为主的室内场景效果最佳
-- 选点页面需在代理模式下使用（Safari 走代理才能拦截储存请求）
+```bash
+node scripts/check-self-hosted.mjs
+cd worker
+npm ci
+npm test
+npm run build
+```
 
-</details>
+`check-self-hosted.mjs` 会递归检查上游 GitHub Raw、仓库、Worker 和 Pages 地址；README 中的上游项目来源是唯一白名单。GitHub Actions 会在每次 push 和 pull request 时执行同样检查、Worker 测试和构建。
 
----
+## Git 历史备份
 
-## 致谢
+当前 `main` 保留了 Fork 的完整提交历史；审计时另外从上游抓取了 `geo` 分支和 `v1.0.0` 标签。GitHub 没有受支持的公开 API 可以把 Fork 安全地脱离 fork network，不能通过删库重建冒险处理。需要独立仓库时，应向 GitHub Support 请求 detach。
 
+恢复 GitHub 写权限后，可把归档引用推送到自己的 Fork：
+
+```bash
+git fetch upstream --tags
+git push origin refs/heads/geo
+git push origin refs/tags/v1.0.0
+```
+
+这些引用是上游历史快照，不是当前自托管 `main` 的运行入口。
+
+## 注意事项
+
+- 需要安装并信任代理工具的 MITM 证书。
+- 仅修改 Apple 网络定位（WiFi/基站），不直接修改 GPS 硬件定位。
+- 选点页面写入坐标时，Safari 请求必须经过已启用模块的代理工具。
+- 收藏位置保存在浏览器 `localStorage`；生效坐标保存在代理工具的 `wloc_settings`，两者互不替代。
+- `dist/wloc.js` 与 `dist/wloc-settings.js` 是客户端实际执行文件，不应删除。
+
+## 致谢与来源
+
+- 上游来源：[Yu9191/wloc](https://github.com/Yu9191/wloc)
 - [proxypin-wloc-spoofer](https://github.com/FFF686868/proxypin-wloc-spoofer) - 原始 WLOC 定位修改思路 by FFF686868
 - [NSNanoCat/Util](https://github.com/NSNanoCat/util) - 跨平台脚本工具框架

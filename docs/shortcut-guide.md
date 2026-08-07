@@ -1,87 +1,94 @@
-# WLOC 虚拟定位 - 使用说明
+# WLOC 自托管快捷指令重建说明
 
-## 工作原理
+本说明用于在上游 iCloud 快捷指令失效时，从零重建自己的版本。仓库不会把上游分享链接当作长期运行依赖。
 
-```
-用户在手机 Safari 打开选点页面
-  → 地图选位置 / 搜索地名 / 粘贴地图链接
-  → 点击「储存到设备」
-  → 页面请求 https://gs-loc.apple.com/wloc-settings/save?lon=x&lat=y
-  → 代理模块拦截请求 → wloc-settings.js 写入 $persistentStore
-  → 下次 Apple 定位触发 → wloc.js 读取坐标 → 修改定位响应
-```
+## 已核查的上游逻辑
 
-如果模块未启用 → 请求不会被拦截 → 页面提示检查 MITM/模块配置。
+“设置地理位置”快捷指令实际执行两次 HTTP 请求：
 
----
+1. 将地图 App 分享的链接 URL 编码后，请求自托管服务的 `/api/parse?format=json&u=...`。
+2. 从 JSON 中取出 `lat`、`lon`、`name`，再请求 `https://gs-loc.apple.com/wloc-settings/save?lat=...&lon=...&acc=25`。
 
-## 使用方法
+“清理恢复位置”不需要解析服务，只请求：
 
-### 1. 安装模块（一次性）
-订阅对应平台的模块并启用 MITM。
-
-### 2. 打开选点页面
-在 Safari 中打开公共选点页面（建议添加到主屏幕）:
-```
-https://你的worker域名/
+```text
+https://gs-loc.apple.com/wloc-settings/save?action=clear
 ```
 
-> Worker 是纯静态页面，不存储任何数据。坐标直接写入你的设备本地。
+上游“设置地理位置”快捷指令还带有上游模块链接和作者社群链接。自建版本应删除这些非功能性动作，或替换为本仓库地址。
 
-### 3. 选择位置
-- **点击地图** — 直接点选
-- **搜索地名** — 输入"上海外滩"等
-- **粘贴链接** — 从 Apple Maps / Google Maps / 高德 / 百度复制分享链接
-- **当前位置** — 使用浏览器定位
+## 前提
 
-### 4. 储存到设备
-点击「� 储存到设备」→ 显示 ✓ 即成功。
+1. 已部署本仓库的 Cloudflare Worker 或 Pages Functions。
+2. `GET <SELF_HOST_URL>/health` 返回 `{"ok":true,"service":"wloc"}`。
+3. `GET <SELF_HOST_URL>/api/parse?format=json&cs=none&u=31.2304%2C121.4737` 返回坐标 JSON。
+4. 代理工具已安装本仓库模块，MITM 包含 `gs-loc.apple.com` 和 `gs-loc-cn.apple.com`。
 
----
+仓库默认配置的 `SELF_HOST_URL` 是：
 
-## 部署公共选点页面
-
-Worker 是纯静态页面服务，无需任何绑定：
-
-```bash
-cd worker
-npx wrangler deploy
+```text
+https://wloc-zhangsan-nb.pages.dev
 ```
 
-或在 CF Dashboard → Workers → 新建 Worker → 粘贴 `wloc-worker.js` → 部署。
+本次处理环境没有 Cloudflare 登录权限，所以上述地址必须在部署后实际访问验证。如果 Wrangler 返回了不同地址，以下所有步骤都使用实际地址。
 
-不需要 KV、不需要数据库、不需要环境变量。
+## 重建“设置地理位置”
 
----
+在快捷指令 App 新建快捷指令，并按顺序添加：
 
-## 模块配置
+1. 在快捷指令详情中启用“在共享表单中显示”，接收“URL”和“文本”。
+2. 读取“快捷指令输入”；如果为空，显示提示并停止。
+3. 对输入执行“URL 编码”。
+4. 使用“URL”动作拼出：
 
-模块包含两条脚本规则（已自动配置，用户无需操作）：
+   ```text
+   https://wloc-zhangsan-nb.pages.dev/api/parse?format=json&u=<URL 编码后的输入>
+   ```
 
-| 规则 | 类型 | 路径 | 作用 |
-|------|------|------|------|
-| Apple WLOC | http-response | `/clls/wloc` | 修改定位响应 |
-| WLOC Settings | http-request | `/wloc-settings/save` | 接收选点页面写入 |
+5. 添加“获取 URL 内容”，方法 `GET`，结果按 JSON 字典处理。
+6. 从字典读取 `lat`、`lon` 和可选的 `name`。
+7. 使用“URL”动作拼出：
 
-MITM 主机名: `gs-loc.apple.com, gs-loc-cn.apple.com`（已包含在模块中）
+   ```text
+   https://gs-loc.apple.com/wloc-settings/save?lat=<lat>&lon=<lon>&acc=25
+   ```
 
----
+8. 再执行一次“获取 URL 内容”，方法 `GET`。
+9. 根据返回字典的 `success` 显示成功或失败提示。
 
-## 储存失败排查
+第 4 步是唯一需要 Cloudflare 自托管服务的功能性 URL。不要继续使用上游公共解析地址。
 
-页面显示红色提示时，检查：
-1. **模块已启用** — 在代理工具中确认 WLOC 模块开关打开
-2. **MITM 证书** — 已安装并信任 CA 证书
-3. **MITM 主机名** — 包含 `gs-loc.apple.com`
-4. **代理连接** — 当前网络走代理（Safari 请求会经过代理）
+## 重建“清理恢复位置”
 
----
+新建第二个快捷指令：
 
-## 备选：手动编辑（BoxJS）
+1. 添加“URL”动作，内容为：
 
-不使用选点页面时，可在 BoxJS 中直接编辑 `wloc_settings`:
-```json
-{"longitude":121.4737,"latitude":31.2304,"accuracy":25}
-```
+   ```text
+   https://gs-loc.apple.com/wloc-settings/save?action=clear
+   ```
 
-优先级: 已储存坐标 > 模块参数 > 默认值
+2. 添加“获取 URL 内容”，方法 `GET`。
+3. 根据返回字典的 `success` 显示成功或失败提示。
+
+这个快捷指令不调用 Worker/Pages。其请求会被已安装模块中的 `dist/wloc-settings.js` 拦截，并清除设备本地 `wloc_settings`。
+
+## 发布自己的分享链接
+
+1. 在快捷指令 App 中逐个运行并验证。
+2. 打开快捷指令详情，选择“共享” -> “复制 iCloud 链接”。
+3. 把 README 的“待创建”替换为自己的两个分享链接。
+4. 再检查快捷指令内部没有上游仓库、上游模块、上游 Worker/Pages 或作者社群 URL。
+
+上游分享链接仅供理解原始交互，不保证长期有效：
+
+- 设置地理位置：https://www.icloud.com/shortcuts/a82717d8fdad4e6280866fcf911173f7
+- 清理恢复位置：https://www.icloud.com/shortcuts/f42632d406504f24a2cd163af4fe012f
+
+## 选点页面方案
+
+不使用快捷指令时，直接在 Safari 打开自己的 `SELF_HOST_URL`：
+
+1. 地图选点、搜索地名或粘贴地图链接。
+2. 页面通过相对路径 `/api/parse` 解析短链接，因此自动使用当前部署实例。
+3. 点击“储存到设备”，页面请求 Apple 设置接口，代理模块将坐标写入设备本地。

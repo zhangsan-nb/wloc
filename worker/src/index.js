@@ -8,6 +8,10 @@ app.get("/", (c) => {
   return c.html(getPageHtml());
 });
 
+app.get("/health", (c) => {
+  return c.json({ ok: true, service: "wloc" });
+});
+
 // 地图链接解析: 供快捷指令调用。
 // GET /api/parse?u=<链接>&format=json&cs=<gcj|none>
 //   返回 {lat, lon, name}; 高德/苹果地图(中国大陆均为 GCJ-02)自动转 WGS84; 境外坐标自动跳过(out_of_china)。cs=none 可强制不转换。
@@ -30,6 +34,13 @@ app.get("/api/parse", async (c) => {
     c.header("Access-Control-Allow-Origin", "*");
     return c.json({ error: String(e && e.message ? e.message : e) }, 422);
   }
+});
+
+app.options("/api/parse", (c) => {
+  c.header("Access-Control-Allow-Origin", "*");
+  c.header("Access-Control-Allow-Methods", "GET, OPTIONS");
+  c.header("Access-Control-Allow-Headers", "Content-Type");
+  return c.body(null, 204);
 });
 
 app.onError((e, c) => {

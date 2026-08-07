@@ -371,13 +371,24 @@ function parseMapUrl(text) {
   return null;
 }
 
-function parseUrl() {
+async function parseUrl() {
   const input = document.getElementById('urlInput').value.trim();
   if (!input) return toast('请粘贴地图链接或坐标');
-  const result = parseMapUrl(input);
-  if (!result) { toast('无法解析坐标，请检查链接格式', 3000); return; }
-  moveTo(result.lat, result.lon, 15);
-  toast('已解析: ' + result.lon.toFixed(4) + ', ' + result.lat.toFixed(4));
+  toast('解析中...');
+  try {
+    const r = await fetch('/api/parse?format=json&u=' + encodeURIComponent(input), { cache:'no-store' });
+    if (!r.ok) throw new Error('parse failed');
+    const result = await r.json();
+    if (!Number.isFinite(result.lat) || !Number.isFinite(result.lon)) throw new Error('invalid coordinates');
+    moveTo(result.lat, result.lon, 15);
+    toast((result.name ? result.name + ' · ' : '') + result.lon.toFixed(4) + ', ' + result.lat.toFixed(4));
+    return;
+  } catch(e) {
+    const result = parseMapUrl(input);
+    if (!result) { toast('无法解析坐标，请检查链接格式', 3000); return; }
+    moveTo(result.lat, result.lon, 15);
+    toast('本地解析: ' + result.lon.toFixed(4) + ', ' + result.lat.toFixed(4));
+  }
 }
 
 async function searchPlace() {
