@@ -85,13 +85,13 @@ https://wloc-spoofer-zhangsan-nb.wuyanzu6869.workers.dev
 
 1. 在快捷指令 App 中逐个运行并验证。
 2. 打开快捷指令详情，选择“共享” -> “复制 iCloud 链接”。
-3. 把 README 的“待创建”替换为自己的两个分享链接。
+3. 确认 README 中的两个分享链接分别指向当前设置与清理快捷指令。
 4. 再检查快捷指令内部没有上游仓库、上游模块、上游 Worker/Pages 或作者社群 URL。
 
-上游分享链接仅供理解原始交互，不保证长期有效：
+当前自建分享链接：
 
-- 设置地理位置：https://www.icloud.com/shortcuts/a82717d8fdad4e6280866fcf911173f7
-- 清理恢复位置：https://www.icloud.com/shortcuts/f42632d406504f24a2cd163af4fe012f
+- 设置地理位置：https://www.icloud.com/shortcuts/652e019fbaf240cc898c5d7f43adfd03
+- 清理恢复位置：https://www.icloud.com/shortcuts/9a1cf6da78cf47b1b4281c3813373e8d
 
 ## 选点页面方案
 
