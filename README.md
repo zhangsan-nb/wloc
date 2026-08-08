@@ -72,12 +72,12 @@ https://gs-loc.apple.com/wloc-settings/save?action=clear
 
 如果改用独立 Worker，请把第 2 步的域名替换为 `https://wloc-spoofer-zhangsan-nb.wuyanzu6869.workers.dev`。快捷指令中若有上游仓库模块链接或作者社群链接，也应删除或替换为本仓库地址。逐步重建说明见 [`docs/shortcut-guide.md`](docs/shortcut-guide.md)。
 
-### 上游快捷指令（仅作来源参考）
+### 快捷指令入口（当前自建版本）
 
-- 设置地理位置：https://www.icloud.com/shortcuts/a82717d8fdad4e6280866fcf911173f7
-- 清理恢复位置：https://www.icloud.com/shortcuts/f42632d406504f24a2cd163af4fe012f
+- 设置地理位置：https://www.icloud.com/shortcuts/652e019fbaf240cc898c5d7f43adfd03
+- 清理恢复位置：https://www.icloud.com/shortcuts/652e019fbaf240cc898c5d7f43adfd03
 
-这两个链接不是本仓库的长期自托管资产。已核查到上游“设置位置”快捷指令会调用上游公共解析服务，并包含上游模块/社群链接；即使当前仍能安装，也必须复制后按上一节替换，不能直接作为自托管完成状态。
+这两个入口均为本仓库当前使用的自建快捷指令；设置位置版本使用本仓库的 Pages 解析服务。
 
 ## 使用方法
 
