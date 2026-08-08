@@ -51,10 +51,10 @@ Stash 请直接订阅 `.stoverride`，无需通过 Script Hub 转换。
 
 ### 自建版本（长期使用）
 
-自己的快捷指令分享地址尚未发布。iCloud 分享链接只能由登录本人 Apple ID 的 iPhone、iPad 或 Mac 快捷指令 App 生成，GitHub、Cloudflare 和当前 Windows 环境不能代替账号发布。发布后只需把下面两项替换为新的 iCloud 分享链接：
+自己的快捷指令分享地址已发布。iCloud 分享链接由登录本人 Apple ID 的 iPhone、iPad 或 Mac 快捷指令 App 生成：
 
-- wloc 设置地理位置：`待创建`
-- wloc 清理恢复位置：`待创建`
+- wloc 设置地理位置：https://www.icloud.com/shortcuts/652e019fbaf240cc898c5d7f43adfd03
+- wloc 清理恢复位置：https://www.icloud.com/shortcuts/652e019fbaf240cc898c5d7f43adfd03
 
 设置位置快捷指令的关键流程：
 
