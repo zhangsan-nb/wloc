@@ -54,7 +54,7 @@ Stash 请直接订阅 `.stoverride`，无需通过 Script Hub 转换。
 自己的快捷指令分享地址已发布。iCloud 分享链接由登录本人 Apple ID 的 iPhone、iPad 或 Mac 快捷指令 App 生成：
 
 - wloc 设置地理位置：https://www.icloud.com/shortcuts/652e019fbaf240cc898c5d7f43adfd03
-- wloc 清理恢复位置：https://www.icloud.com/shortcuts/652e019fbaf240cc898c5d7f43adfd03
+- wloc 清理恢复位置：https://www.icloud.com/shortcuts/9a1cf6da78cf47b1b4281c3813373e8d
 
 设置位置快捷指令的关键流程：
 
@@ -75,7 +75,7 @@ https://gs-loc.apple.com/wloc-settings/save?action=clear
 ### 快捷指令入口（当前自建版本）
 
 - 设置地理位置：https://www.icloud.com/shortcuts/652e019fbaf240cc898c5d7f43adfd03
-- 清理恢复位置：https://www.icloud.com/shortcuts/652e019fbaf240cc898c5d7f43adfd03
+- 清理恢复位置：https://www.icloud.com/shortcuts/9a1cf6da78cf47b1b4281c3813373e8d
 
 这两个入口均为本仓库当前使用的自建快捷指令；设置位置版本使用本仓库的 Pages 解析服务。
 
